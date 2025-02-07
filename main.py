@@ -6,6 +6,7 @@ import ctypes
 from graphic_configs import WIDTH, HEIGHT, FONT_SIZE
 from items.modals.create_modal import CreateModal
 from items.modals.delete_modal import DeleteModal
+from items.modals.error_modal import ErrorModal
 from os_api.config import DESTINATION_DIR
 from os_api.methods import get_modpacks, get_mods, move_modpack, rename_dir, open_dir
 from items.modals.rename_modal import RenameModal
@@ -14,19 +15,30 @@ from items.mods_window import ModsWindow
 
 async def activate_modpack(modpack):
     dpg.configure_item("loading_window", show=True)
-    move_modpack(modpack)
-    open_dir(DESTINATION_DIR)
-    await asyncio.sleep(0.5)
+    try:
+        move_modpack(modpack)
+        open_dir(DESTINATION_DIR)
+        await asyncio.sleep(0.5)
+    except FileNotFoundError:
+        dpg.configure_item("loading_window", show=False)
+        ErrorModal.open_modal("Directory not found")
+
     dpg.configure_item("loading_window", show=False)
 
 
 def show_mods(modpack):
-    with dpg.window(label="Mods", width=WIDTH // 2, height=HEIGHT - 100):
-        for i, mod in enumerate(get_mods(modpack)):
-            dpg.add_text(default_value=f'{i+1}. {mod}')
+    try:
+        mods = get_mods(modpack)
+    except FileNotFoundError:
+        ErrorModal.open_modal("Directory with that name doesn't exist")
+    else:
+        with dpg.window(label="Mods", width=WIDTH // 2, height=HEIGHT - 100):
+            for i, mod in enumerate(mods):
+                dpg.add_text(default_value=f'{i+1}. {mod}')
 
 
 def start_app():
+    print(WIDTH, HEIGHT, FONT_SIZE)
     dpg.create_context()
     dpg.create_viewport(width=WIDTH, height=HEIGHT, title="Mode Switcher")
 
@@ -34,7 +46,6 @@ def start_app():
     rename_modal = RenameModal(mods_window)
     create_modal = CreateModal(mods_window)
     delete_modal = DeleteModal(mods_window)
-
 
     with dpg.font_registry():
         with dpg.font("static/fonts/NotoSerifCJKjp-Medium.otf", FONT_SIZE) as font1:
@@ -58,11 +69,7 @@ def start_app():
                 dpg.add_menu_item(label="Setting 2")
 
         dpg.add_menu_item(label="Help")
-
-        with dpg.menu(label="Widget Items"):
-            dpg.add_checkbox(label="Pick Me")
-            dpg.add_button(label="Press Me")
-            dpg.add_color_picker(label="Color Me")
+        dpg.add_menu_item(label="Show Item Registry", callback=dpg.show_item_registry)
 
     # rename_modal.submit() - ???
     with dpg.window(tag="main_window"):
@@ -78,8 +85,6 @@ def start_app():
 
             dpg.add_button(label="Update", callback=mods_window.update)
             dpg.add_button(label="Create", callback=create_modal.open_modal, tag='btn')
-
-    dpg.show_item_registry()
 
     dpg.set_primary_window("main_window", True)
     dpg.setup_dearpygui()

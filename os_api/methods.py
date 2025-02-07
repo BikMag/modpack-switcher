@@ -1,15 +1,16 @@
 import glob
 import os
+import re
 import shutil
 
 from os_api.config import MODPACK_DIR, DESTINATION_DIR, BASE_DIR
 
 
 def get_mods(dir_name):
-    mod_dir = os.path.abspath(MODPACK_DIR + dir_name)
+    mod_dir = os.path.realpath(os.path.join(MODPACK_DIR, dir_name))
     if not os.path.exists(mod_dir):
         print(f'Directory "{dir_name}" doesn\'t exist')
-        return None
+        raise FileNotFoundError
 
     mods_names = []
     for f in os.listdir(mod_dir):
@@ -27,10 +28,10 @@ def get_modpacks(path=MODPACK_DIR):
 
 
 def move_modpack(dir_name):
-    mod_dir = os.path.abspath(MODPACK_DIR + dir_name)
+    mod_dir = os.path.realpath(os.path.join(MODPACK_DIR, dir_name))
     if not os.path.exists(mod_dir):
         print(f'Directory "{dir_name}" doesn\'t exist')
-        return
+        raise FileNotFoundError
 
     clear_dir(DESTINATION_DIR) # Решить вопрос с очисткой папки перед перемещением модов
 
@@ -54,28 +55,36 @@ def remove_dir(dir_name):
     dir_path = os.path.join(MODPACK_DIR, dir_name)
     if not os.path.exists(dir_path):
         print(f'Directory "{dir_name}" doesn\'t exists')
-        return
+        raise FileNotFoundError
 
     shutil.rmtree(dir_path)
     print(f'Directory "{dir_name}" has been removed')
 
-def create_dir(dir_name):
+def create_dir(dir_name: str):
+    if not re.match(r'^[^\\/:*?"<>|]+$', dir_name):
+        print(f'Wrong directory name')
+        raise ValueError
+
     dir_path = os.path.join(MODPACK_DIR, dir_name)
     if os.path.exists(dir_path):
         print(f'Directory "{dir_name}" exists')
-        return
+        raise FileExistsError
 
     os.mkdir(dir_path)
     os.startfile(dir_path)
     print('Now you can add mods in this directory')
 
 def rename_dir(dir_name, new_dir_name):
+    if not re.match(r'^[^\\/:*?"<>|]+$', new_dir_name):
+        print(f'Wrong directory name')
+        raise ValueError
+
     dir_path = os.path.join(MODPACK_DIR, dir_name)
 
     new_dir_path = os.path.join(MODPACK_DIR, new_dir_name)
     if os.path.exists(new_dir_path):
         print(f'Directory "{dir_name}" exists')
-        raise FileExistsError("test")
+        raise FileExistsError()
 
     os.rename(dir_path, new_dir_path)
 
