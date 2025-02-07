@@ -7,7 +7,8 @@ from graphic_configs import WIDTH, HEIGHT, FONT_SIZE
 from items.modals.create_modal import CreateModal
 from items.modals.delete_modal import DeleteModal
 from items.modals.error_modal import ErrorModal
-from os_api.config import DESTINATION_DIR
+import os_api.config as api_conf
+from items.settings_window import add_settings_window, open_settings_window
 from os_api.methods import get_modpacks, get_mods, move_modpack, rename_dir, open_dir
 from items.modals.rename_modal import RenameModal
 from items.mods_window import ModsWindow
@@ -17,7 +18,7 @@ async def activate_modpack(modpack):
     dpg.configure_item("loading_window", show=True)
     try:
         move_modpack(modpack)
-        open_dir(DESTINATION_DIR)
+        open_dir(api_conf.DESTINATION_DIR)
         await asyncio.sleep(0.5)
     except FileNotFoundError:
         dpg.configure_item("loading_window", show=False)
@@ -38,7 +39,6 @@ def show_mods(modpack):
 
 
 def start_app():
-    print(WIDTH, HEIGHT, FONT_SIZE)
     dpg.create_context()
     dpg.create_viewport(width=WIDTH, height=HEIGHT, title="Mode Switcher")
 
@@ -46,6 +46,8 @@ def start_app():
     rename_modal = RenameModal(mods_window)
     create_modal = CreateModal(mods_window)
     delete_modal = DeleteModal(mods_window)
+
+    add_settings_window()
 
     with dpg.font_registry():
         with dpg.font("static/fonts/NotoSerifCJKjp-Medium.otf", FONT_SIZE) as font1:
@@ -64,11 +66,7 @@ def start_app():
             dpg.add_menu_item(label="Save")
             dpg.add_menu_item(label="Save As")
 
-            with dpg.menu(label="Settings"):
-                dpg.add_menu_item(label="Setting 1", check=True)
-                dpg.add_menu_item(label="Setting 2")
-
-        dpg.add_menu_item(label="Help")
+        dpg.add_menu_item(tag="settings_button", label="Settings", callback=open_settings_window)
         dpg.add_menu_item(label="Show Item Registry", callback=dpg.show_item_registry)
 
     # rename_modal.submit() - ???
