@@ -5,13 +5,14 @@ import dearpygui.dearpygui as dpg
 import ctypes
 
 from graphic_configs import WIDTH, HEIGHT, FONT_SIZE
+from items.about_window import add_about_window, open_about_window
 from items.modals.create_modal import CreateModal
 from items.modals.delete_modal import DeleteModal
 from items.modals.error_modal import ErrorModal
 import os_api.config as api_conf
 from items.mods_list_window import add_mods_list_window, open_mods_list_window
 from items.settings_window import add_settings_window, open_settings_window
-from os_api.methods import get_modpacks, get_mods, move_modpack, rename_dir, open_dir
+from os_api.methods import move_modpack, open_dir
 from items.modals.rename_modal import RenameModal
 from items.mods_window import ModsWindow
 
@@ -31,7 +32,7 @@ async def activate_modpack(modpack):
 
 def start_app():
     dpg.create_context()
-    dpg.create_viewport(width=WIDTH, height=HEIGHT, title="Mode Switcher")
+    dpg.create_viewport(width=WIDTH, height=HEIGHT, title="Modpack Switcher")
 
     mods_window = ModsWindow()
     rename_modal = RenameModal(mods_window)
@@ -40,6 +41,7 @@ def start_app():
 
     add_settings_window()
     add_mods_list_window()
+    add_about_window()
 
     with dpg.font_registry():
         with dpg.font("static/fonts/Minecraft.otf", FONT_SIZE) as font1:
@@ -56,6 +58,7 @@ def start_app():
 
     with dpg.viewport_menu_bar():
         dpg.add_menu_item(tag="settings_button", label="Settings", callback=open_settings_window)
+        dpg.add_menu_item(tag="about_button", label="About", callback=open_about_window)
         dpg.add_menu_item(label="Debug", callback=dpg.show_item_registry)
 
     # rename_modal.submit() - ???

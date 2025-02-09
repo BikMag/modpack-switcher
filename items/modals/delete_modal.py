@@ -11,10 +11,10 @@ class DeleteModal:
         with dpg.stage() as stage:
             with dpg.window(label="Delete modpack", modal=True, show=False, tag="delete_modal_id",
                             no_title_bar=False, no_resize=True, no_move=True,
-                            width=WIDTH // 4, pos=(200, 200)
+                            width=WIDTH // 3, pos=(200, 200)
                             ):
                 dpg.add_text(default_value="Are you sure you want to delete this modpack?",
-                             wrap=WIDTH // 4 * 0.9)
+                             wrap=WIDTH // 3 * 0.9)
                 with dpg.group(horizontal=True):
                     dpg.add_button(label="OK", callback=self.delete_modpack)
                     dpg.add_button(label="Cancel",

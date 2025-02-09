@@ -11,7 +11,7 @@ class RenameModal:
         with dpg.stage() as stage:
             with dpg.window(label="Rename modpack", modal=True, show=False, tag="rename_modal_id",
                             no_title_bar=False, no_resize=True, no_move=True,
-                            width=WIDTH // 4, pos=(200, 200)
+                            width=WIDTH // 3, pos=(200, 200)
                             ):
                 dpg.add_text(default_value="Modpack name")
                 value = dpg.add_input_text(hint="Enter modpack name here",

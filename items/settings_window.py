@@ -53,7 +53,7 @@ def add_settings_window():
 
     with dpg.window(
             tag="settings_window", label="Settings",
-            width=WIDTH * 0.6, show=False, no_collapse=True
+            width=WIDTH * 0.8, show=False, no_collapse=True
     ) as settings_window:
         dpg.add_text("Modpacks directory:")
         with dpg.group(horizontal=True):
