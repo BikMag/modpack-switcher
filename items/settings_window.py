@@ -1,11 +1,30 @@
+import os.path
+
 import dearpygui.dearpygui as dpg
 
 import os_api.config as api_conf
 from graphic_configs import WIDTH
-
+from items.modals.error_modal import ErrorModal
 
 
 def change_directory_paths(modpacks_dir, destination_dir):
+    if modpacks_dir == "":
+        dpg.hide_item("settings_window")
+        ErrorModal.open_modal(f"Modpacks directory is empty")
+        return
+    if destination_dir == "":
+        dpg.hide_item("settings_window")
+        ErrorModal.open_modal(f"Destination directory is empty")
+        return
+    if not os.path.exists(modpacks_dir):
+        dpg.hide_item("settings_window")
+        ErrorModal.open_modal(f"Directory '{modpacks_dir}' doesn't exist")
+        return
+    if not os.path.exists(destination_dir):
+        dpg.hide_item("settings_window")
+        ErrorModal.open_modal(f"Directory '{destination_dir}' doesn't exist")
+        return
+
     api_conf.save_data(modpacks_dir, destination_dir)
     dpg.hide_item("settings_window")
 
@@ -32,7 +51,10 @@ def add_settings_window():
         file_count=1, modal=True
     )
 
-    with dpg.window(tag="settings_window", label="Settings", width=WIDTH * 0.6, show=False) as settings_window:
+    with dpg.window(
+            tag="settings_window", label="Settings",
+            width=WIDTH * 0.6, show=False, no_collapse=True
+    ) as settings_window:
         dpg.add_text("Modpacks directory:")
         with dpg.group(horizontal=True):
             dpg.add_button(
@@ -44,7 +66,7 @@ def add_settings_window():
                 tag="modpacks_dir_input",
                 width=-1,
                 default_value=api_conf.MODPACK_DIR,
-                enabled=False
+                readonly=True
             )
 
         dpg.add_text("Destination directory:")
@@ -58,7 +80,7 @@ def add_settings_window():
                 tag="destination_dir_input",
                 width=-1,
                 default_value=api_conf.DESTINATION_DIR,
-                enabled=False
+                readonly=True
             )
 
         dpg.add_button(

@@ -8,7 +8,7 @@ class ModsWindow:
     def __init__(self):
         self.selected = None
         with dpg.stage() as stage:
-            self._window = dpg.add_child_window(tag="mods_window", width=WIDTH // 2)
+            self._window = dpg.add_child_window(tag="mods_window", width=WIDTH // 3)
             self.update()
 
         self.stage = stage

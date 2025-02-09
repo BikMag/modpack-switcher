@@ -35,5 +35,5 @@ if os.path.exists('data.json'):
     DESTINATION_DIR = data["destination_dir"]
 else:
     MODPACK_DIR = os.path.join(BASE_DIR, 'mods')
-    DESTINATION_DIR = os.path.join(BASE_DIR, 'test_dir') # Поменять на сущ. папку mods для Minecraft
+    DESTINATION_DIR = os.path.join("C:\\Users", os.getlogin(), "AppData\Roaming\.minecraft\mods")
     save_data(MODPACK_DIR, DESTINATION_DIR)

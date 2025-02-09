@@ -13,11 +13,11 @@ class CreateModal:
                             no_title_bar=False, no_resize=True, no_move=True,
                             width=WIDTH // 4, pos=(200, 200)
                             ):
-                dpg.add_text(default_value="modpack name")
-                value = dpg.add_input_text(hint="enter modpack name here",
+                dpg.add_text(default_value="Modpack name")
+                value = dpg.add_input_text(hint="Enter modpack name here",
                                            tag="create_modal_input", on_enter=True,
                                            callback=lambda: self.create_modpack(dpg.get_value(value)),
-                                           auto_select_all=True)
+                                           auto_select_all=True, width=-1)
                 with dpg.group(horizontal=True):
                     dpg.add_button(label="OK", callback=lambda: self.create_modpack(dpg.get_value(value)))
                     dpg.add_button(label="Cancel",

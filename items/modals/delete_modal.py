@@ -14,7 +14,7 @@ class DeleteModal:
                             width=WIDTH // 4, pos=(200, 200)
                             ):
                 dpg.add_text(default_value="Are you sure you want to delete this modpack?",
-                             wrap=(WIDTH - 20) // 4)
+                             wrap=WIDTH // 4 * 0.9)
                 with dpg.group(horizontal=True):
                     dpg.add_button(label="OK", callback=self.delete_modpack)
                     dpg.add_button(label="Cancel",
